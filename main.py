@@ -1,6 +1,7 @@
 import colorama
 from colorama import Fore, Back, Style
 menuChoice = 0
+playerList = []
 def menu():
     global menuChoice
     print(Fore.BLUE + Style.BRIGHT + "Welcome to 21-Companion!!!")
@@ -13,7 +14,7 @@ def menu():
             print(Fore.RED + Style.NORMAL + "Uh Oh! Looks like you didn't enter a number. Please try again and set your choice to the number next to the menu option!")
             menuChoice = '!'
         if menuChoice == 1:
-            play()
+            playerconfig()
         elif menuChoice == 2:
             rusure = input(Fore.RED + Style.NORMAL + "Are you sure you wish to exit the game? (y/n) \t")
             if rusure == "y":
@@ -32,8 +33,27 @@ def menu():
             menuChoice = 0
 
 
-def play():
-    print("Play!")
+def playerconfig():
+    global playerList
+    print(Style.RESET_ALL + Fore.RED + "[Devlog] Play!")
+    queryCorrect = 0
+    while queryCorrect == 0:
+        print(Style.RESET_ALL + Fore.BLUE + "Step 1: Player Configuration\n" + Style.RESET_ALL + "Please input each player's name separated by a comma, in the order that they will play.\nNo need to include the dealer.")
+        user_input = input(Fore.LIGHTCYAN_EX + "\nPlayer Names:\t").strip()
+        playerList = [name.strip() for name in user_input.split(',') if name.strip()]
+        print(Fore. LIGHTGREEN_EX + "\nPlease double check these names are correct:")
+        for name in playerList:
+            print(f"- {name}")
+        queryCorrect = input("Are these names correct? (y/n) \t")
+        if queryCorrect == 'y':
+            game()
+        else:
+            queryCorrect = 0
+
+def game():
+    global playerList
+    print(Style.RESET_ALL + Fore.RED + "[Devlog] Game!")
+
 
 
 # Execute Functions!
