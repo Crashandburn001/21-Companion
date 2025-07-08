@@ -2,6 +2,8 @@ import colorama
 from colorama import Fore, Back, Style
 menuChoice = 0
 playerList = []
+startBalance = 1
+costPerCard = 1
 def menu():
     global menuChoice
     print(Fore.BLUE + Style.BRIGHT + "Welcome to 21-Companion!!!")
@@ -46,13 +48,40 @@ def playerconfig():
             print(f"- {name}")
         queryCorrect = input("Are these names correct? (y/n) \t")
         if queryCorrect == 'y':
-            game()
+            gameConfig()
         else:
             queryCorrect = 0
 
-def game():
+def gameConfig():
     global playerList
-    print(Style.RESET_ALL + Fore.RED + "[Devlog] Game!")
+    global costPerCard
+    global startBalance
+    print(Style.RESET_ALL + Fore.RED + "[Devlog] Game Configuration!")
+    startBalance = 0
+    while startBalance == 0:
+        try:
+            startBalanceQuery = int(input(Style.RESET_ALL + Style.BRIGHT + "\nHow many coins does each player start with?\t\t"))
+            if startBalanceQuery < 20:
+                print(Style.NORMAL + Fore.RED + "Invalid Input. Starting Balance must be greater than 20.")
+            else:
+                startBalance = startBalanceQuery
+
+        except:
+            print(Style.NORMAL + Fore.RED + "Invalid Input! Please try again. Your input must be a number.")
+    costPerCard = 0
+    while costPerCard == 0:
+        try:
+            costPerCardQuery = int(input(Style.RESET_ALL + Style.BRIGHT + "\nWhat is the cost per card?\t\t"))
+            if costPerCardQuery <= 0 or costPerCardQuery > startBalance / 15:
+                print(
+                    Style.NORMAL + Fore.RED + "Invalid input. Cost per card must be greater than 0 and low enough for each player to afford at least 15 cards.")
+
+
+            else:
+                costPerCard = costPerCardQuery
+
+        except:
+            print(Style.NORMAL + Fore.RED + "Invalid Input! Please try again. Your input must be a whole number.")
 
 
 
