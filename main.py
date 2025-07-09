@@ -1,9 +1,11 @@
 import colorama
 from colorama import Fore, Back, Style
+import time
 menuChoice = 0
 playerList = []
 startBalance = 1
 costPerCard = 1
+roundType = 0
 def menu():
     global menuChoice
     print(Fore.BLUE + Style.BRIGHT + "Welcome to 21-Companion!!!")
@@ -73,17 +75,58 @@ def gameConfig():
         try:
             costPerCardQuery = int(input(Style.RESET_ALL + Style.BRIGHT + "\nWhat is the cost per card?\t\t"))
             if costPerCardQuery <= 0 or costPerCardQuery > startBalance / 15:
-                print(
-                    Style.NORMAL + Fore.RED + "Invalid input. Cost per card must be greater than 0 and low enough for each player to afford at least 15 cards.")
-
-
+                print(Style.NORMAL + Fore.RED + "Invalid input. Cost per card must be greater than 0 and low enough for each player to afford at least 15 cards.")
             else:
                 costPerCard = costPerCardQuery
-
         except:
             print(Style.NORMAL + Fore.RED + "Invalid Input! Please try again. Your input must be a whole number.")
+    dealerOptions()
 
+def dealerOptions():
+    global playerList
+    global costPerCard
+    global startBalance
+    global roundType
+    print(Fore.RED + Style.NORMAL + "[Devlog] Dealer Options!")
+
+    print(Style.RESET_ALL + Fore.CYAN + Style.BRIGHT + "Dealer Options:")
+    print(Style.NORMAL + Fore.GREEN + "\n[1] Normal Round" +
+    Fore.BLUE + "\n[2] Double Cost Round" +
+    Fore.YELLOW + "\n[3] Exclude Player/s" +
+    Fore.LIGHTMAGENTA_EX + "\n[4] Quit")
+    dealerOptionsQuery = 0
+    while dealerOptionsQuery == 0 or dealerOptionsQuery == '!':
+        try:
+            dealerOptionsQuery = int(input(Style.RESET_ALL + Style.BRIGHT + "\nPlease choose an option:\t"))
+        except ValueError:
+            print(Fore.RED + "Invalid Input. Please input a number!")
+            dealerOptionsQuery = '!'
+        if dealerOptionsQuery == 1:
+            roundType = 1
+            game()
+        elif dealerOptionsQuery == 2:
+            roundType = 2
+            game()
+        elif dealerOptionsQuery == 3:
+            excludePlayer()
+        elif dealerOptionsQuery == 4:
+            print(Fore.MAGENTA + Style.BRIGHT + "\n\nQuitting Game...")
+            time.sleep(1)
+            quit()
+        elif dealerOptionsQuery == '!':
+            dealerOptionsQuery = 0
+        else:
+            print(Fore.RED + Style.NORMAL + "Invalid Input. Please input a number that is within range!")
+
+
+def excludePlayer():
+    global playerList
+    print(Fore.RED + Style.NORMAL + "[Devlog] Exclude Player!")
+
+
+def game():
+    print(Fore.RED + Style.NORMAL + "[Devlog] Game")
 
 
 # Execute Functions!
-menu()
+dealerOptions()
