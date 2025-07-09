@@ -3,6 +3,7 @@ from colorama import Fore, Back, Style
 import time
 menuChoice = 0
 playerList = []
+excludedPlayers = []
 startBalance = 1
 costPerCard = 1
 roundType = 0
@@ -93,23 +94,26 @@ def dealerOptions():
     print(Style.NORMAL + Fore.GREEN + "\n[1] Normal Round" +
     Fore.BLUE + "\n[2] Double Cost Round" +
     Fore.YELLOW + "\n[3] Exclude Player/s" +
-    Fore.LIGHTMAGENTA_EX + "\n[4] Quit")
+    Fore.LIGHTBLUE_EX + "\n[4] Restore Player/s" +
+    Fore.LIGHTMAGENTA_EX + "\n[5] Quit")
     dealerOptionsQuery = 0
     while dealerOptionsQuery == 0 or dealerOptionsQuery == '!':
         try:
             dealerOptionsQuery = int(input(Style.RESET_ALL + Style.BRIGHT + "\nPlease choose an option:\t"))
         except ValueError:
-            print(Fore.RED + "Invalid Input. Please input a number!")
+            print(Fore.RED + Style.NORMAL + "Invalid Input. Please input a number!")
             dealerOptionsQuery = '!'
         if dealerOptionsQuery == 1:
             roundType = 1
-            game()
+            play()
         elif dealerOptionsQuery == 2:
             roundType = 2
-            game()
+            play()
         elif dealerOptionsQuery == 3:
             excludePlayer()
         elif dealerOptionsQuery == 4:
+            restorePlayer()
+        elif dealerOptionsQuery == 5:
             print(Fore.MAGENTA + Style.BRIGHT + "\n\nQuitting Game...")
             time.sleep(1)
             quit()
@@ -117,16 +121,90 @@ def dealerOptions():
             dealerOptionsQuery = 0
         else:
             print(Fore.RED + Style.NORMAL + "Invalid Input. Please input a number that is within range!")
+            dealerOptionsQuery = 0
 
 
 def excludePlayer():
-    global playerList
+    global playerList, excludedPlayers
     print(Fore.RED + Style.NORMAL + "[Devlog] Exclude Player!")
 
+    if not playerList:
+        print("No players to exclude.")
+        return
 
-def game():
+    print(Style.RESET_ALL + "Current players:")
+    for i, name in enumerate(playerList, start=1):
+        print(f"[{i}] {name}")
+
+    exclude_input = input(Fore.CYAN + "Enter the number(s) of the player(s) to exclude (comma-separated):\t\t").strip()
+    if not exclude_input:
+        print("No input provided.")
+        return
+
+    try:
+        indices = [int(num.strip()) - 1 for num in exclude_input.split(',') if num.strip().isdigit()]
+        indices = sorted(set(i for i in indices if 0 <= i < len(playerList)), reverse=True)
+
+        removed = []
+        for i in indices:
+            removed.append(playerList.pop(i))
+
+        excludedPlayers.extend(removed)
+
+        if removed:
+            print(Fore.YELLOW + "Excluded:")
+            for name in removed:
+                print(f"- {name}")
+            print("\n")
+        else:
+            print("No valid players were excluded.")
+    except ValueError:
+        print("Invalid input. Please enter only numbers.")
+    dealerOptions()
+
+
+def restorePlayer():
+    global playerList, excludedPlayers
+    print(Fore.RED + Style.NORMAL + "[Devlog] Restore Player!")
+
+    if not excludedPlayers:
+        print("No players to restore.")
+        return
+
+    print(Fore.YELLOW + "Excluded players:")
+    for i, name in enumerate(excludedPlayers, start=1):
+        print(f"[{i}] {name}")
+
+    restore_input = input(Fore.CYAN +"Enter the number(s) of the player(s) to restore (comma-separated): ").strip()
+    if not restore_input:
+        print("No input provided.")
+        return
+
+    try:
+        indices = [int(num.strip()) - 1 for num in restore_input.split(',') if num.strip().isdigit()]
+        indices = sorted(set(i for i in indices if 0 <= i < len(excludedPlayers)), reverse=True)
+
+        restored = []
+        for i in indices:
+            restored.append(excludedPlayers.pop(i))
+
+        playerList.extend(restored)
+
+        if restored:
+            print(Fore.GREEN + "Restored:")
+            for name in restored:
+                print(f"- {name}")
+            print("\n")
+        else:
+            print("No valid players were restored.")
+    except ValueError:
+        print("Invalid input. Please enter only numbers.")
+    dealerOptions()
+
+
+def play():
     print(Fore.RED + Style.NORMAL + "[Devlog] Game")
 
 
 # Execute Functions!
-dealerOptions()
+menu()
